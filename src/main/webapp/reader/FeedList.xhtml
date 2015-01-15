@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>登録一覧</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:outputText value="一件も登録されていません" rendered="#{empty feedListPage.feedList}" />
+            <h:dataTable value="#{feedListPage.feedList}" var="c" border="1" rendered="#{not empty feedListPage.feedList}">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="タイトル" />
+                    </f:facet>
+                    <h:outputLink value="#{c.url}">
+                        <h:outputText value="#{c.title}" />
+                    </h:outputLink>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="未読記事数" />
+                    </f:facet>
+                    <h:outputText value="#{feedListPage.getUnreadCount(c.rssid)}" />
+                </h:column>
+                <h:column>
+                    <h:commandButton value="記事一覧" style="font-size: 14px;" action="#{feedListPage.getContentsList(c.rssid)}" />
+                </h:column>
+                <h:column>
+                    <h:commandButton value="確認" style="font-size: 14px;" action="#{feedListPage.feedUpdate(c.rssid)}"/>
+                </h:column>
+                <h:column>
+                    <h:commandButton value="削除" style="font-size: 14px;" action="#{feedListPage.deleteFeed(c.rssid)}"/>
+                </h:column>
+            </h:dataTable>
+            <h:link value="登録" outcome="/app/reader/FeedRegist.xhtml" />
+            <h:commandButton value="ログアウト" action="#{indexPage.logout()}" />
+        </h:form>
+    </h:body>
+</html>
+

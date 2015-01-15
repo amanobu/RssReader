@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/
+    xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>ユーザ登録画面</title>
+        <!--スタイルシートはこの様に読むらしい-->
+        <h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
+    </h:head>
+    <h:body>
+        <h:form>
+
+            <center>
+                <p:panel header="ユーザ登録画面" style="width: 320px;">
+                    <h:panelGrid columns="2" columnClasses="column" cellpadding="5">
+                        <h:outputLabel value="ユーザ名" style="font-size: 14 px;" />
+                        <p:inputText id="userid" value="#{registPage.userid}" style="font-size: 14px;width: 100%" maxlength="30" />
+
+                        <h:outputLabel value="パスワード" style="font-size:14 px;" />
+                        <ui:remove>primefacesのほうがデザイン良いので変更<h:inputSecret id="pw" value="#{registPage.pw}" style="font-size: 14px;" /></ui:remove>
+                        <p:password id="pw" maxlength="30" feedback="true"
+                                    promptLabel="入力して下さい" weakLabel="パスワード強度：弱い" 
+                                    goodLabel="パスワード強度：普通" strongLabel="パスワード強度：強い" style="font-size:14 px;;width: 100%" value="#{registPage.pw}"/>
+                    </h:panelGrid>
+                    <h:commandButton value="登録" style="font-size: 14px;" action="#{registPage.registDB}"/>
+                    <p:messages id="massages" autoUpdate="true" closable="true" />
+                    <h:link value="戻る" outcome="/app/index.xhtml" />
+                </p:panel>
+            </center>
+        </h:form>
+    </h:body>
+</html>
+
