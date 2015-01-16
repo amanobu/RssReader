@@ -1,0 +1,17 @@
+input[type=submit] {
+	background: -moz-linear-gradient(top, #fff, #F1F1F1 1%, #F1F1F1 50%, #DFDFDF 99%, #ccc);
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), color-stop(0.01, #F1F1F1), color-stop(0.5, #F1F1F1), color-stop(0.99, #DFDFDF), to(#ccc));
+	-moz-box-shadow: 1px 1px 2px #E7E7E7;
+	-webkit-box-shadow: 1px 1px 2px #E7E7E7;
+        width: 100%;
+}
+input[type=submit]:hover	{
+	background: -moz-linear-gradient(top, #fff, #e1e1e1 1%, #e1e1e1 50%, #cfcfcf 99%, #ccc);
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), color-stop(0.01, #e1e1e1), color-stop(0.5, #e1e1e1), color-stop(0.99, #cfcfcf), to(#ccc));
+        width: 100%;
+}
+input[type=submit]:active	{
+	background: #ccc;
+	padding: 6px 20px 4px;
+        width: 100%;
+}
