@@ -34,6 +34,7 @@
             <url-pattern>/faces/login/*</url-pattern>
             -->
             <url-pattern>/app/reader/*</url-pattern>
+            <url-pattern>/app/user-manage/remove.xhtml</url-pattern>
             <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>

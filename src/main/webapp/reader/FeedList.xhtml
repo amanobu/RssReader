@@ -7,6 +7,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
         <title>登録一覧</title>
+        <h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
     </h:head>
     <h:body>
         <h:form>
@@ -36,7 +37,7 @@
                     <h:commandButton value="削除" style="font-size: 14px;" action="#{feedListPage.deleteFeed(c.rssid)}"/>
                 </h:column>
             </h:dataTable>
-            <h:link value="登録" outcome="/app/reader/FeedRegist.xhtml" />
+            <h:button value="登録" outcome="/app/reader/FeedRegist.xhtml" />
             <h:commandButton value="ログアウト" action="#{indexPage.logout()}" />
         </h:form>
     </h:body>

@@ -5,17 +5,19 @@ import java.io.Serializable;
 import java.security.Principal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 @Named(value = "indexPage")
-@RequestScoped
-public class IndexPage implements Serializable{
+@ViewScoped
+public class IndexPage implements Serializable {
 
     private String userid;
     private String pw;
@@ -26,57 +28,88 @@ public class IndexPage implements Serializable{
     public IndexPage() {
     }
 
-    public String login() {
-        Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE,"login called","");
+    /**
+     * ログイン後要求されたページにリダイレクトする為の保存場所
+     * http://stackoverflow.com/questions/2206911/performing-user-authentication-in-java-ee-jsf-using-j-security-check
+     * http://stackoverflow.com/questions/13420748/java-ee-security-not-redirected-to-initial-page-after-login
+     */
+    private String originalURL;
+
+    @PostConstruct
+    public void init() {
+        /*
+        http://stackoverflow.com/questions/2206911/performing-user-authentication-in-java-ee-jsf-using-j-security-check
+        の内容をコピペ
+        */
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        originalURL = (String) externalContext.getRequestMap().get(RequestDispatcher.FORWARD_REQUEST_URI);
+
+        if (originalURL == null) {
+            originalURL = externalContext.getRequestContextPath() + "/home.xhtml";
+        } else {
+            String originalQuery = (String) externalContext.getRequestMap().get(RequestDispatcher.FORWARD_QUERY_STRING);
+
+            if (originalQuery != null) {
+                originalURL += "?" + originalQuery;
+            }
+        }
+        Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE, "login init:" + originalURL, "");
+    }
+
+    public void login() {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext econtext = context.getExternalContext();
+        String originalURI = (String) econtext.getRequestMap().get(RequestDispatcher.FORWARD_REQUEST_URI);
         HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
+        Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE, "login called:" + originalURI, "");
         try {
             request.login(getUserid(), getPw());
-            return "/reader/FeedList.xhtml?faces-redirect=true";
-        } catch (ServletException ex) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"ログインに失敗しました","ユーザ名・パスワードを確認ください"));
-            return "";
+            //保存して置いた呼び出し先にリダイレクトする
+            econtext.redirect(originalURL);
+            //return "/reader/FeedList.xhtml?faces-redirect=true";
+        } catch (Exception ex) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ログインに失敗しました", "ユーザ名・パスワードを確認ください"));
+            //return "";
         }
     }
-    
-    public String logout(){
-        Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE,"logout called","");
+
+    public String logout() {
+        Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE, "logout called", "");
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext econtext = context.getExternalContext();
         econtext.invalidateSession();
         HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
-        try{
+        try {
             request.logout();
-        }catch (ServletException ex) {
-            Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE,"Logout Fail"+ex.toString(),ex);
+        } catch (ServletException ex) {
+            Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE, "Logout Fail" + ex.toString(), ex);
             return "";
         }
         return "FeedList.xhtml?faces-redirect=true";
     }
-    
+
     // if logined,redirect to home.xhtml
-    public void onPageLoad() throws ServletException{
-        Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE,"onPageLoad called","");
+    public void onPageLoad() throws ServletException {
+        Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE, "onPageLoad called", "");
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext econtext = context.getExternalContext();
         //econtext.invalidateSession();
         HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
-        
+
         Principal p = request.getUserPrincipal();
-        if(null != p){
-            try{
+        if (null != p) {
+            try {
                 StringBuilder sb = new StringBuilder(request.getContextPath());
-                
+
                 sb.append("/app/login/home.xhtml");
-                Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE,"login skip:"+sb.toString(),sb.toString());
+                Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE, "login skip:" + sb.toString(), sb.toString());
                 FacesContext.getCurrentInstance().getExternalContext().redirect(sb.toString());
-            }catch(IOException e){
-                Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE,"LoginSkip IOException",e);
+            } catch (IOException e) {
+                Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE, "LoginSkip IOException", e);
                 request.logout();
             }
-        }else{
-            Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE,"LoginSkip fail Principal is null","");
+        } else {
+            Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE, "LoginSkip fail Principal is null", "");
         }
     }
 

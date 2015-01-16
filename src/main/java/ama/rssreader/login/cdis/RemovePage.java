@@ -1,25 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ama.rssreader.login.cdis;
 
 import ama.rssreader.login.ejbs.UserRegistManager;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author amanobu
  */
 @Named(value = "removePage")
-@RequestScoped
+@ViewScoped
 public class RemovePage implements Serializable {
-    private String userid;
-    
+
     @EJB
     UserRegistManager userManager;
 
@@ -28,9 +28,20 @@ public class RemovePage implements Serializable {
      */
     public RemovePage() {
     }
-    
-    public String removeDB(){
+
+    public String removeDB() {
         userManager.removeUser(getUserid());
+        Logger.getLogger(RemovePage.class.getName()).log(Level.SEVERE, "logout called", "");
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext econtext = context.getExternalContext();
+        econtext.invalidateSession();
+        HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
+        try {
+            request.logout();
+        } catch (ServletException ex) {
+            Logger.getLogger(RemovePage.class.getName()).log(Level.SEVERE, "Logout Fail" + ex.toString(), ex);
+            return "";
+        }
         return "rem-success";
     }
 
@@ -38,14 +49,10 @@ public class RemovePage implements Serializable {
      * @return the username
      */
     public String getUserid() {
-        return userid;
-    }
-
-    /**
-     * @param userid the username to set
-     */
-    public void setUserid(String userid) {
-        this.userid = userid;
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext econtext = context.getExternalContext();
+        HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
+        return request.getRemoteUser();
     }
 
     /**
@@ -61,5 +68,5 @@ public class RemovePage implements Serializable {
     public void setUserManager(UserRegistManager userManager) {
         this.userManager = userManager;
     }
-    
+
 }

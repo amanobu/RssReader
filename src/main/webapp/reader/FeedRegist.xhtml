@@ -6,20 +6,19 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>新規登録</title>
+        <h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
     </h:head>
     <h:body>
         <h:form>
-
             <center>
-                <p:panel header="新規登録" style="width: 320px;">
+                <p:panel header="新規登録" style="width: 100%;">
+                    <p:messages id="massages" autoUpdate="true" closable="true" />
                     <h:panelGrid columns="2" columnClasses="column" cellpadding="5">
-                        <h:outputLabel value="url" style="font-size: 14 px;" />
+                        <h:outputLabel value="ＵＲＬ" style="font-size: 14 px;" />
                         <h:inputText id="userid" value="#{feedRegistPage.url}" style="font-size: 14px;" />
-
                     </h:panelGrid>
                     <h:commandButton value="登録" style="font-size: 14px;" action="#{feedRegistPage.registFeed}"/>
-                    <p:messages id="massages" autoUpdate="true" closable="true" />
-                    <h:link value="一覧へ" outcome="/app/reader/FeedList.xhtml" />
+                    <h:button value="一覧へ" outcome="/app/reader/FeedList.xhtml" />
                 </p:panel>
             </center>
         </h:form>

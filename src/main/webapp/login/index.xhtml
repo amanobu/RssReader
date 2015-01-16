@@ -6,6 +6,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>ログイン画面</title>
+        <h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
         <f:event type="preRenderView" listener="#{indexPage.onPageLoad}" />
     </h:head>
     <script>
@@ -30,7 +31,7 @@
                     <h:commandLink value="ユーザ登録" action="/app/user-manage/regist.xhtml" />／
                     <h:commandLink value="ユーザ削除" action="/app/user-manage/remove.xhtml" />
                     <br />
-                    <h:link value="戻る" outcome="/app/index.xhtml" />
+                    <h:button value="戻る" outcome="/app/index.xhtml" />
                 </p:panel>
             </center>
         </h:form>

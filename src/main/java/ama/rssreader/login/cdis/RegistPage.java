@@ -2,17 +2,23 @@ package ama.rssreader.login.cdis;
 
 import ama.rssreader.login.ejbs.UserRegistManager;
 import ama.rssreader.login.entities.Usertbl;
+import ama.rssreader.util.LogUtil;
 import java.io.Serializable;
+import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+
 import javax.faces.application.FacesMessage;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.validation.constraints.Size;
 
 @Named(value = "registPage")
 @RequestScoped
 public class RegistPage implements Serializable {
+    /*
+    なんで、@javax.enterprise.context.RequestScopedだとちゃんとUserがセットされるけど、@javax.faces.view.RequestScopedだとダメなのかがよくわからん
+    */
     
     @Size(min = 3, message = "3文字以上128文字以内で入力してください")
     private String userid;
@@ -30,6 +36,7 @@ public class RegistPage implements Serializable {
     
     public String registDB() {
         //既存ユーザがいないか確認
+        LogUtil.log(RegistPage.class.getName(), Level.INFO, "ユーザ登録します:", getUserid());
         Usertbl user = userRegist.findUser(getUserid());
         if (null == user) {
             //同名のuserがいなければ登録

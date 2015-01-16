@@ -53,6 +53,7 @@ public class FeedRegistPage implements Serializable {
             String userid = request.getRemoteUser();
             Logger.getLogger(FeedListPage.class.getName()).log(Level.SEVERE, "getFeedList called:" + request.getRemoteUser() + "," + title + "," + url, "");
             rsslogic.regFeed(userid, url);
+            //この様にxhtmlの名前にするのその画面がひょうじさ
             return "feedreg-success";
         } catch (Exception e) {
             e.printStackTrace();

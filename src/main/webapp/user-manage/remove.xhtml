@@ -5,6 +5,7 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>ユーザ削除画面</title>
+        <h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
     </h:head>
     <h:body>
         <h:form>
@@ -12,11 +13,11 @@
                 <p:panel header="ユーザ削除画面" style="width: 320px;">
                     <h:panelGrid columns="2" columnClasses="column" cellpadding="5">
                         <h:outputLabel value="削除ユーザ名" style="font-size: 14 px;" />
-                        <h:inputText id="userId" value="#{removePage.userid}" style="font-size: 14px;" />
+                        <h:outputText id="userId" value="#{removePage.getUserid()}" style="font-size: 14px;" />
                     </h:panelGrid>
                     <h:commandButton value="削除する" style="font-size: 14px;" action="#{removePage.removeDB}"/>
                     <p:messages id="massages" autoUpdate="true" closable="true" />
-                    <h:link value="戻る" outcome="/app/index.xhtml" />
+                    <h:button value="戻る" outcome="/app/index.xhtml" />
                 </p:panel>
             </center>
         </h:form>
