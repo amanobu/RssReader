@@ -15,7 +15,25 @@
             <h:link value="一覧へ" outcome="/app/reader/FeedList.xhtml" /> / 
             <p:commandLink value="すべて既読にする" action="#{contentsListPage.updateAllReadFlag(true)}" update="form1"/> / 
             <p:commandLink value="全件表示する" action="#{contentsListPage.getContentsList()}" update="form1" ajax="false"/> / 
-            <p:commandLink value="未読の物だけにする" action="#{contentsListPage.getUnreadContentsList()}" update="form1" ajax="false"/> 
+            <p:commandLink value="未読の物だけにする" action="#{contentsListPage.getUnreadContentsList()}" update="form1" ajax="false"/>
+            <p:panel rendered="#{empty contentsListPage.list}">
+                <h:outputText value="記事がありません" />
+            </p:panel>
+            <p:dataList id="lists" value="#{contentsListPage.list}" var="c" type="definition" rendered="#{not empty contentsListPage.list}">
+                <p:panel id="basic" header="#{c.title}" >
+                    <p:panelGrid columns="2">
+                        <h:outputText value="#{c.contents}"/>
+                    </p:panelGrid>
+                    <f:facet name="actions">
+                        <h:commandLink styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default">
+                            <p:link value="　Link　" href="#{c.url}" />　　　　　
+                            <p:commandLink value="#{c.readflg ? '　既読　' : '　未読　'}" action="#{contentsListPage.updateReadFlg(c.contentsid,!c.readflg)}">
+                                <f:ajax render="@form"/>
+                            </p:commandLink>
+                        </h:commandLink>
+                    </f:facet>
+                </p:panel>
+            </p:dataList>
 
             <ui:remove>
                 以下のajax＋h:columnのrendered属性の判定を記載すれば、既読・未読に状況に応じて動的に画面を制御できると思ったが、どうもdataTableの行を動的に表示・非表示の制御ができない模様
@@ -24,20 +42,6 @@
                     <f:ajax render="@form"/>
                 </p:commandButton>
             </ui:remove>
-            <h:outputText value="一件も登録されていません" rendered="#{empty contentsListPage.list}" />
-
-            <p:dataList id="lists" value="#{contentsListPage.list}" var="c" type="definition" rendered="#{not empty contentsListPage.list}">
-                <p:panel id="basic" header="#{c.title}">
-                    <p:panelGrid columns="2">
-                    <h:outputText value="#{c.contents}" />
-                        <p:commandLink value="#{c.readflg ? '既読' : '未読'}" action="#{contentsListPage.updateReadFlg(c.contentsid,!c.readflg)}">
-                            <f:ajax render="@form"/>
-                        </p:commandLink>
-                    </p:panelGrid>
-                </p:panel>
-            </p:dataList>
-
-
             <ui:remove>
                 datatableを辞めた
                 <h:dataTable id="lists" value="#{contentsListPage.getContentsList()}" var="c" border="1" rendered="#{not empty contentsListPage.getContentsList()}">
