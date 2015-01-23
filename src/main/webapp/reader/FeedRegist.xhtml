@@ -9,16 +9,17 @@
         <h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
     </h:head>
     <h:body>
+        <h:messages globalOnly="false" styleClass="error" showSummary="true" showDetail="true" layout="table" />  
         <h:form>
             <center>
                 <p:panel header="新規登録" style="width: 100%;">
-                    <p:messages id="massages" autoUpdate="true" closable="true" />
+                    <p:messages id="massages" autoUpdate="true" closable="true" showDetail="true"/>
                     <h:panelGrid columns="2" columnClasses="column" cellpadding="5">
-                        <h:outputLabel value="ＵＲＬ" style="font-size: 14 px;" />
-                        <h:inputText id="userid" value="#{feedRegistPage.url}" style="font-size: 14px;" />
+                        <h:outputLabel value="ＵＲＬ" />
+                        <h:inputText id="userid" value="#{feedRegistPage.url}" size="100"/>
                     </h:panelGrid>
-                    <h:commandButton value="登録" style="font-size: 14px;" action="#{feedRegistPage.registFeed}"/>
-                    <h:button value="一覧へ" outcome="/app/reader/FeedList.xhtml" />
+                    <p:commandButton value="登録" action="#{feedRegistPage.registFeed}"/>
+                    <p:button value="一覧へ" outcome="/app/reader/FeedList.xhtml" />
                 </p:panel>
             </center>
         </h:form>
