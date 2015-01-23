@@ -16,7 +16,7 @@
             <h:outputText value="一件も登録されていません" rendered="#{empty feedListPage.feedList}" />
             <p:commandLink value="登録" action="/app/reader/FeedRegist.xhtml" />/
             <p:commandLink value="ログアウト" action="#{indexPage.logout()}" />
-            <p:dataList id="datalist" value="#{feedListPage.feedList}" var="c" itemType="disc" rendered="#{not empty feedListPage.feedList}">
+            <p:dataList id="datalist" value="#{feedListPage.feedList}" var="c" type="definition" rendered="#{not empty feedListPage.feedList}">
                 <p:commandLink value="#{c.title}" action="#{feedListPage.getContentsList(c.rssid)}" />, 
                 #{feedListPage.getUnreadCount(c.rssid)}, 
                 <p:commandLink action="#{feedListPage.feedUpdate(c.rssid)}" update="datalist" value="更新確認"/> ,
