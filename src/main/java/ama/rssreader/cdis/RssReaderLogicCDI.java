@@ -25,6 +25,7 @@ public class RssReaderLogicCDI {
 
     @EJB
     RssReaderLogic rsslogic;
+    
 
     public RssReaderLogicCDI() {
 
@@ -61,6 +62,7 @@ public class RssReaderLogicCDI {
         List<Contentstbl> list = RssUtil.getFeeds(url);
         LogUtil.log(SUBLOGSTR, Level.ALL, "取得した記事一覧:" + list.toString());
         Date now = new Date();
+        boolean successflg = false;
         for (Contentstbl contents : list) {
             contents.setReadflg(false);
             contents.setRssid(new Feedtbl(rssid));
@@ -68,10 +70,16 @@ public class RssReaderLogicCDI {
             LogUtil.log(SUBLOGSTR, Level.ALL, "登録する記事", contents.getTitle());
             try {
                 rsslogic.registContents(contents);
+                successflg = true;
             } catch (Exception e) {
                 e.printStackTrace();
                 LogUtil.log(SUBLOGSTR, Level.ALL, "登録失敗した記事Exception:", contents.getTitle(), e.getLocalizedMessage());
             }
+        }
+        if(successflg){
+            //一件でも更新した物があったのでFeedtblのupdateを更新する
+            feed.setUpddate(new Date());
+            rsslogic.updateFeed(feed);
         }
     }
 }

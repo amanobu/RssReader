@@ -67,7 +67,7 @@ public class RssReaderLogic {
      */
     public List<Feedtbl> feedList(String userid) {
         Logger.getLogger(RssReaderLogic.class.getName()).log(Level.SEVERE, "RssReaderLogic feedList called:" + userid, "");
-        Query q = em.createQuery("select object(o) from Feedtbl as o WHERE o.userid = :userid", Feedtbl.class);
+        Query q = em.createQuery("select object(o) from Feedtbl as o WHERE o.userid = :userid order by o.upddate", Feedtbl.class);
         q.setParameter("userid", new Usertbl(userid));
         return q.getResultList();
     }
@@ -88,25 +88,27 @@ public class RssReaderLogic {
 
     /**
      * 登録されているFeedの詳細を取得します
+     *
      * @param userid
      * @param url
-     * @return 
+     * @return
      */
     public Feedtbl getFeed(String userid, String url) {
         Query q = em.createQuery("select object(o) from Feedtbl as o WHERE o.userid = :userid AND o.url = :url ", Feedtbl.class);
         q.setParameter("url", url);
-        q.setParameter("userid",getUser(userid));
+        q.setParameter("userid", getUser(userid));
         //q.setParameter("userid",userid);
-        
-        return (Feedtbl)q.getSingleResult();
+
+        return (Feedtbl) q.getSingleResult();
     }
-    
+
     /**
      * 登録されているUsertblの情報を取得します
+     *
      * @param userid
-     * @return 
+     * @return
      */
-    public Usertbl getUser(String userid){
+    public Usertbl getUser(String userid) {
         Usertbl usertbl = (Usertbl) em.createNamedQuery("Usertbl.findByUserid").setParameter("userid", userid).getSingleResult();
         return usertbl;
     }
@@ -128,6 +130,23 @@ public class RssReaderLogic {
         }
         Query q = em.createQuery("select object(o) from Contentstbl as o WHERE o.rssid = :rssid order by o.publishdate desc", Contentstbl.class);
         q.setParameter("rssid", new Feedtbl(rssid));
+
+        return q.getResultList();
+    }
+
+    /**
+     * 未読の記事一覧の取得
+     * @param rssid
+     * @param userid
+     * @return 
+     */
+    public List<Contentstbl> getUnreadContentsList(Integer rssid, String userid) {
+        if (!check(rssid, userid)) {
+            return new ArrayList();
+        }
+        Query q = em.createQuery("select object(o) from Contentstbl as o WHERE o.rssid = :rssid AND o.readflg = :readflg order by o.publishdate desc", Contentstbl.class);
+        q.setParameter("rssid", new Feedtbl(rssid));
+        q.setParameter("readflg", false);
 
         return q.getResultList();
     }
@@ -212,5 +231,14 @@ public class RssReaderLogic {
         List<Integer> list = q.getResultList();
         LogUtil.log(RssReaderLogic.class.getName(), Level.INFO, "全件rssidList:", list);
         return list;
+    }
+
+    /**
+     * 引数に渡されたFeedtblのオブジェクトでアップデートする
+     *
+     * @param feed
+     */
+    public void updateFeed(Feedtbl feed) {
+        em.merge(feed);
     }
 }
