@@ -4,41 +4,61 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsf="http://xmlns.jcp.org/jsf"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>登録一覧</title>
         <h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
     </h:head>
     <h:body>
         <h:form>
+            <h:messages globalOnly="false" styleClass="error" showSummary="true" showDetail="true" layout="table" />  
             <h:outputText value="一件も登録されていません" rendered="#{empty feedListPage.feedList}" />
-            <h:dataTable value="#{feedListPage.feedList}" var="c" border="1" rendered="#{not empty feedListPage.feedList}">
-                <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="タイトル" />
-                    </f:facet>
-                    <h:outputLink value="#{c.url}">
-                        <h:outputText value="#{c.title}" />
-                    </h:outputLink>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="未読記事数" />
-                    </f:facet>
-                    <h:outputText value="#{feedListPage.getUnreadCount(c.rssid)}" />
-                </h:column>
-                <h:column>
-                    <h:commandButton value="記事一覧" style="font-size: 14px;" action="#{feedListPage.getContentsList(c.rssid)}" />
-                </h:column>
-                <h:column>
-                    <h:commandButton value="確認" style="font-size: 14px;" action="#{feedListPage.feedUpdate(c.rssid)}"/>
-                </h:column>
-                <h:column>
-                    <h:commandButton value="削除" style="font-size: 14px;" action="#{feedListPage.deleteFeed(c.rssid)}"/>
-                </h:column>
-            </h:dataTable>
-            <h:button value="登録" outcome="/app/reader/FeedRegist.xhtml" />
-            <h:commandButton value="ログアウト" action="#{indexPage.logout()}" />
+            <p:commandLink value="登録" action="/app/reader/FeedRegist.xhtml" />/
+            <p:commandLink value="ログアウト" action="#{indexPage.logout()}" />
+            <p:dataList id="datalist" value="#{feedListPage.feedList}" var="c" itemType="disc" rendered="#{not empty feedListPage.feedList}">
+                <p:commandLink value="#{c.title}" action="#{feedListPage.getContentsList(c.rssid)}" />, 
+                #{feedListPage.getUnreadCount(c.rssid)}, 
+                <p:commandLink action="#{feedListPage.feedUpdate(c.rssid)}" update="datalist" value="更新確認"/> ,
+                <p:commandLink action="#{feedListPage.deleteFeed(c.rssid)}" update="datalist" value="削除" ajax="false">
+                    <p:confirm header="確認" message="削除してもよろしいですか？" icon="ui-icon-alert"/>
+                </p:commandLink>
+            </p:dataList>
+            <p:confirmDialog global="true">
+                <p:commandButton value="やっちゃいなよ" type="button" styleClass="ui-confirmdialog-yes"
+                                 icon="ui-icon-check"/>
+                <p:commandButton value="やっぱやーめた" type="button" styleClass="ui-confirmdialog-no"
+                                 icon="ui-icon-close"/>
+            </p:confirmDialog>
+            <ui:remove>
+                datatableは使わずp:dataListにした
+                <h:dataTable value="#{feedListPage.feedList}" var="c" border="1" rendered="#{not empty feedListPage.feedList}">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="タイトル" />
+                        </f:facet>
+                        <h:outputLink value="#{c.url}">
+                            <h:outputText value="#{c.title}" />
+                        </h:outputLink>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="未読記事数" />
+                        </f:facet>
+                        <h:outputText value="#{feedListPage.getUnreadCount(c.rssid)}" />
+                    </h:column>
+                    <h:column>
+                        <h:commandButton value="記事一覧" style="font-size: 14px;" action="#{feedListPage.getContentsList(c.rssid)}" />
+                    </h:column>
+                    <h:column>
+                        <h:commandButton value="確認" style="font-size: 14px;" action="#{feedListPage.feedUpdate(c.rssid)}"/>
+                    </h:column>
+                    <h:column>
+                        <h:commandButton value="削除" style="font-size: 14px;" action="#{feedListPage.deleteFeed(c.rssid)}"/>
+                    </h:column>
+                </h:dataTable>
+            </ui:remove>
+
         </h:form>
     </h:body>
 </html>
