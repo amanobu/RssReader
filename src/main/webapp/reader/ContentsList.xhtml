@@ -4,7 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:jsf="http://xmlns.jcp.org/jsf"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>記事一覧</title>
         <h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
@@ -14,9 +15,9 @@
             <ui:remove>
                 以下のajax＋h:columnのrendered属性の判定を記載すれば、既読・未読に状況に応じて動的に画面を制御できると思ったが、どうもdataTableの行を動的に表示・非表示の制御ができない模様
                 http://stackoverflow.com/questions/4870512/jsf-hcolumn-tag-not-evaluating-rendered-attribute
-                <h:commandButton value="#{contentsListPage.selectedAllView ? '未読のみ' : '全件表示'}" action="#{contentsListPage.setSelectedAllViewFlag(!contentsListPage.selectedAllView)}">
+                <p:commandButton value="#{contentsListPage.selectedAllView ? '未読のみ' : '全件表示'}" action="#{contentsListPage.setSelectedAllViewFlag(!contentsListPage.selectedAllView)}">
                     <f:ajax render="@form"/>
-                </h:commandButton>
+                </p:commandButton>
             </ui:remove>
             <h:outputText value="一件も登録されていません" rendered="#{empty contentsListPage.getContentsList()}" />
             <h:dataTable id="lists" value="#{contentsListPage.getContentsList()}" var="c" border="1" rendered="#{not empty contentsListPage.getContentsList()}">
@@ -35,7 +36,7 @@
                     <h:outputText value="#{c.contents}" />
                 </h:column>
                 <h:column>
-                    <h:commandButton value="#{c.readflg ? '既読' : '未読'}" action="#{contentsListPage.updateReadFlg(c.contentsid,!c.readflg)}">
+                    <p:commandLink value="#{c.readflg ? '既読' : '未読'}" action="#{contentsListPage.updateReadFlg(c.contentsid,!c.readflg)}">
                         <ui:remove>@formと書いた理由はrender="lists"と上のf:ajaxタグで書いてもボタンが更新されず、FORM全体を更新するときは@formと書けばいいらしい</ui:remove>
                         <ui:remove>なぜか、このように記載せず以下のようにボタンを２つ配置し、それぞれによびだす関数の引数を変えて配置すると、一回おきにしか更新されない・・・なぜだろう・・・</ui:remove>
                         <ui:remove>
@@ -48,13 +49,13 @@
                                 <f:ajax render="@form"/>
                             </h:commandButton></ui:remove>
                         <f:ajax render="@form"/>
-                    </h:commandButton>
+                    </p:commandLink>
                 </h:column>
             </h:dataTable>
-            <h:link value="一覧へ" outcome="/app/reader/FeedList.xhtml" />
-            <h:commandButton value="すべて既読にする" action="#{contentsListPage.updateAllReadFlag(true)}">
+            <h:link value="一覧へ" outcome="/app/reader/FeedList.xhtml" /> / 
+            <p:commandLink value="すべて既読にする" action="#{contentsListPage.updateAllReadFlag(true)}">
                 <f:ajax render="@form"/>
-            </h:commandButton>
+            </p:commandLink>
         </h:form>
     </h:body>
     <ui:remove>デバッグ用の記載。以下のように書くとCtrl+Shift+xで別画面で詳細が分かるものが立ち上がる</ui:remove>
