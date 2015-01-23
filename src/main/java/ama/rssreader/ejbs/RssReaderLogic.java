@@ -86,9 +86,32 @@ public class RssReaderLogic {
         return feed;
     }
 
-
+    /**
+     * 登録されているFeedの詳細を取得します
+     * @param userid
+     * @param url
+     * @return 
+     */
+    public Feedtbl getFeed(String userid, String url) {
+        Query q = em.createQuery("select object(o) from Feedtbl as o WHERE o.userid = :userid AND o.url = :url ", Feedtbl.class);
+        q.setParameter("url", url);
+        q.setParameter("userid",getUser(userid));
+        //q.setParameter("userid",userid);
+        
+        return (Feedtbl)q.getSingleResult();
+    }
     
-    public void registContents(Contentstbl contents){
+    /**
+     * 登録されているUsertblの情報を取得します
+     * @param userid
+     * @return 
+     */
+    public Usertbl getUser(String userid){
+        Usertbl usertbl = (Usertbl) em.createNamedQuery("Usertbl.findByUserid").setParameter("userid", userid).getSingleResult();
+        return usertbl;
+    }
+
+    public void registContents(Contentstbl contents) {
         em.persist(contents);
     }
 
@@ -179,7 +202,7 @@ public class RssReaderLogic {
             return true;
         }
     }
-    
+
     /**
      * 全件のRssIdを取得します
      *
