@@ -78,6 +78,7 @@ public class ContentsListPage implements Serializable {
         setList(rsslogic.getContentsList(rssid, user));
     }
 
+    @PostConstruct
     public void getUnreadContentsList() {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext econtext = context.getExternalContext();
