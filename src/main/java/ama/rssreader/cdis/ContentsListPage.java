@@ -66,7 +66,7 @@ public class ContentsListPage implements Serializable {
         rsslogic.updateReadflg(userid, contentsid, flag);
     }
 
-    public List<Contentstbl> getContentsList() {
+    public void getContentsList() {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext econtext = context.getExternalContext();
         //setRssid((Integer) econtext.getFlash().get("rssid"));
@@ -75,10 +75,32 @@ public class ContentsListPage implements Serializable {
         LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "getContentsList called:", request.getRemoteUser(), "ConvsastionBean->", bean.toString());
         String user = request.getRemoteUser();
         bean.setSelectedRssid(getRssid());
-        return rsslogic.getContentsList(rssid, user);
+        setList(rsslogic.getContentsList(rssid, user));
+    }
+
+    public void getUnreadContentsList() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext econtext = context.getExternalContext();
+        //setRssid((Integer) econtext.getFlash().get("rssid"));
+        setRssid(bean.getSelectedRssid());
+        HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
+        LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "getContentsList called:", request.getRemoteUser(), "ConvsastionBean->", bean.toString());
+        String user = request.getRemoteUser();
+        bean.setSelectedRssid(getRssid());
+        setList(rsslogic.getUnreadContentsList(rssid, user));
+    }
+
+    public List<Contentstbl> getList() {
+        return list;
+    }
+
+    public void setList(List<Contentstbl> list) {
+        this.list = list;
     }
 
     private boolean selectedAllView;
+
+    private List<Contentstbl> list;
 
     public boolean isSelectedAllView() {
         return selectedAllView;
@@ -100,17 +122,17 @@ public class ContentsListPage implements Serializable {
      bean.setSelectedAllView(flag);
      }
      */
-    
     /**
      * 既読未読フラグを全更新します
-     * @param flag 
+     *
+     * @param flag
      */
     public void updateAllReadFlag(boolean flag) {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext econtext = context.getExternalContext();
         HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
         String userid = request.getRemoteUser();
-        LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "updateAllReadFlag called:","rssid:",bean.getSelectedRssid(),"flag:",flag);
+        LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "updateAllReadFlag called:", "rssid:", bean.getSelectedRssid(), "flag:", flag);
         rsslogic.updataAllReadflg(userid, bean.getSelectedRssid(), flag);
     }
 }
