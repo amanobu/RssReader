@@ -193,7 +193,7 @@ public class RssReaderLogic {
      * 該当の記事全件をflagの値に更新する
      *
      * @param userid
-     * @param contentsid
+     * @param rssid
      * @param flag
      */
     public void updataAllReadflg(String userid, Integer rssid, boolean flag) {

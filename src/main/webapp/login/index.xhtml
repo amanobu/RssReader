@@ -17,21 +17,17 @@
     <h:body>
         <h:form>
             <center>
-                <p:panel header="ログイン画面" style="width: 320px;">
+                <p:panel header="ログイン画面">
+                    <p:messages id="massages" autoUpdate="true" closable="true" showDetail="true"/>
                     <h:panelGrid columns="2" columnClasses="column" cellpadding="5">
-                        <h:outputLabel value="ユーザ名:" style="font-size: 14 px;" />
-                        <h:inputText id="userName" value="#{indexPage.userid}" style="font-size: 14px;" />
-
-                        <h:outputLabel value="パスワード" style="font-size:14 px;" />
-                        <h:inputSecret id="password" value="#{indexPage.pw}" style="font-size: 14px;" />
-
+                        <h:outputLabel value="ユーザ名:" />
+                        <h:inputText id="userName" value="#{indexPage.userid}" />
+                        <h:outputLabel value="パスワード" />
+                        <h:inputSecret id="password" value="#{indexPage.pw}" />
                     </h:panelGrid>
-                    <h:commandButton value="ログイン" style="font-size: 14px;" action="#{indexPage.login}"/>
-                    <h:messages id="massages" showDetail="true" errorStyle="color: RED;font-size: 14px;" />
-                    <h:commandLink value="ユーザ登録" action="/app/user-manage/regist.xhtml" />／
-                    <h:commandLink value="ユーザ削除" action="/app/user-manage/remove.xhtml" />
-                    <br />
-                    <h:button value="戻る" outcome="/app/index.xhtml" />
+                    <p:commandButton value="ログイン" action="#{indexPage.login}" ajax="false"/>／
+                    <p:button value="ユーザ登録" outcome="/app/user-manage/regist.xhtml" />／
+                    <p:button value="ユーザ削除" outcome="/app/user-manage/remove.xhtml" />
                 </p:panel>
             </center>
         </h:form>

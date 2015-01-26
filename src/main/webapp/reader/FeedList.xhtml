@@ -14,17 +14,18 @@
         <h:form>
             <h:messages globalOnly="false" styleClass="error" showSummary="true" showDetail="true" layout="table" />  
             <h:outputText value="一件も登録されていません" rendered="#{empty feedListPage.feedList}" />
-            <p:commandLink value="登録" action="/app/reader/FeedRegist.xhtml" />/
-            <p:commandLink value="ログアウト" action="#{indexPage.logout()}" />
+            <p:commandLink value="登録" action="/app/reader/FeedRegist.xhtml" ajax="false"/>　／　
+            <p:commandLink value="ログアウト" action="#{indexPage.logout()}" ajax="false"/>　／　
+            <p:commandLink value="ユーザ削除" action="/app/user-manage/remove.xhtml" ajax="false"/>
             <p:dataList id="datalist" value="#{feedListPage.feedList}" var="c" type="definition" rendered="#{not empty feedListPage.feedList}">
-                <p:commandLink value="#{c.title}" action="#{feedListPage.getContentsList(c.rssid)}" />, 
+                <p:commandLink value="#{c.title}" action="#{feedListPage.getContentsList(c.rssid)}" ajax="false"/>, 
                 #{feedListPage.getUnreadCount(c.rssid)}, 
                 <p:commandLink action="#{feedListPage.feedUpdate(c.rssid)}" update="datalist" value="更新確認"/> ,
                 <p:commandLink action="#{feedListPage.deleteFeed(c.rssid)}" update="datalist" value="削除" ajax="false">
                     <p:confirm header="確認" message="削除してもよろしいですか？" icon="ui-icon-alert"/>
                 </p:commandLink>
             </p:dataList>
-            <p:confirmDialog global="true">
+            <p:confirmDialog>
                 <p:commandButton value="やっちゃいなよ" type="button" styleClass="ui-confirmdialog-yes"
                                  icon="ui-icon-check"/>
                 <p:commandButton value="やっぱやーめた" type="button" styleClass="ui-confirmdialog-no"

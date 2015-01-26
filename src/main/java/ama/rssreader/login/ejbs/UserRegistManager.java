@@ -50,4 +50,9 @@ public class UserRegistManager {
         Usertbl user = em.find(Usertbl.class, userid);
         return user;
     }
+    
+    public void setLogindate(String userid){
+        Usertbl user = em.find(Usertbl.class, userid);
+        user.setUpddate(new Date());
+    }
 }

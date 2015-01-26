@@ -19,7 +19,7 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>app/index.xhtml</welcome-file>
+        <welcome-file>app/reader/FeedList.xhtml</welcome-file>
     </welcome-file-list>
     <error-page>
         <error-code>403</error-code>

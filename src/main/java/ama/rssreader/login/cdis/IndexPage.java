@@ -1,11 +1,13 @@
 package ama.rssreader.login.cdis;
 
+import ama.rssreader.login.ejbs.UserRegistManager;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
@@ -14,17 +16,20 @@ import javax.faces.view.ViewScoped;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-
+/**
+ * ログイン処理をするバッキングビーン
+ * @author amanobu
+ */
 @Named(value = "indexPage")
 @ViewScoped
 public class IndexPage implements Serializable {
 
     private String userid;
     private String pw;
+    
+    @EJB
+    UserRegistManager logic;
 
-    /**
-     * Creates a new instance of IndexPage
-     */
     public IndexPage() {
     }
 
@@ -64,6 +69,8 @@ public class IndexPage implements Serializable {
         Logger.getLogger(IndexPage.class.getName()).log(Level.SEVERE, "login called:" + originalURI, "");
         try {
             request.login(getUserid(), getPw());
+            //ログインした時間の記録
+            logic.setLogindate(getUserid());
             //保存して置いた呼び出し先にリダイレクトする
             econtext.redirect(originalURL);
             //return "/reader/FeedList.xhtml?faces-redirect=true";

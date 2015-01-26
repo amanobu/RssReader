@@ -25,8 +25,8 @@
                                     promptLabel="入力して下さい" weakLabel="パスワード強度：弱い" 
                                     goodLabel="パスワード強度：普通" strongLabel="パスワード強度：強い" style="font-size:14 px;width: 100%" value="#{registPage.pw}"/>
                     </h:panelGrid>
-                    <h:commandButton value="登録" action="#{registPage.registDB}"/>
-                    <h:button value="戻る" outcome="/app/index.xhtml"  />
+                    <p:commandButton value="登録" action="#{registPage.registDB}" ajax="false"/>
+                    <p:button value="ログイン" outcome="/app/reader/FeedList.xhtml?faces-redirect=true"/>
                 </p:panel>
             </center>
         </h:form>

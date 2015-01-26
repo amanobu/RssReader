@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -13,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * ユーザ削除ページのバッキングビーンです
  *
  * @author amanobu
  */
@@ -29,20 +31,23 @@ public class RemovePage implements Serializable {
     public RemovePage() {
     }
 
-    public String removeDB() {
-        userManager.removeUser(getUserid());
-        Logger.getLogger(RemovePage.class.getName()).log(Level.SEVERE, "logout called", "");
+    public void removeDB() {
+        Logger.getLogger(RemovePage.class.getName()).log(Level.SEVERE, "RemovePage removeDB called", "");
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext econtext = context.getExternalContext();
         econtext.invalidateSession();
         HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
+        String user = request.getRemoteUser();
         try {
             request.logout();
+            userManager.removeUser(user);
         } catch (ServletException ex) {
             Logger.getLogger(RemovePage.class.getName()).log(Level.SEVERE, "Logout Fail" + ex.toString(), ex);
-            return "";
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "削除失敗しました", user);
+            FacesContext.getCurrentInstance().addMessage(null, message);
         }
-        return "rem-success";
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "削除完了しました",user);
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
     /**

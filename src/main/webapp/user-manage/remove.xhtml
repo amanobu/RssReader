@@ -11,14 +11,22 @@
         <h:form>
             <center>
                 <p:panel header="ユーザ削除画面" style="width: 320px;">
+                    <p:messages id="massages" autoUpdate="true" closable="true" showDetail="true"/>
                     <h:panelGrid columns="2" columnClasses="column" cellpadding="5">
                         <h:outputLabel value="削除ユーザ名" style="font-size: 14 px;" />
                         <h:outputText id="userId" value="#{removePage.getUserid()}" style="font-size: 14px;" />
                     </h:panelGrid>
-                    <h:commandButton value="削除する" style="font-size: 14px;" action="#{removePage.removeDB}"/>
-                    <p:messages id="massages" autoUpdate="true" closable="true" />
-                    <h:button value="戻る" outcome="/app/index.xhtml" />
+                    <p:commandButton action="#{removePage.removeDB}" value="削除する">
+                        <p:confirm header="確認" message="削除してもよろしいですか？" icon="ui-icon-alert"/>
+                    </p:commandButton>
+                    <p:button value="一覧へ" outcome="/app/reader/FeedList.xhtml?faces-redirect=true"/>
                 </p:panel>
+                <p:confirmDialog global="true">
+                    <p:commandButton value="やっちゃいなよ" type="button" styleClass="ui-confirmdialog-yes"
+                                     icon="ui-icon-check"/>
+                    <p:commandButton value="やっぱやーめた" type="button" styleClass="ui-confirmdialog-no"
+                                     icon="ui-icon-close"/>
+                </p:confirmDialog>
             </center>
         </h:form>
     </h:body>
