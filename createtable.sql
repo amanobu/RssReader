@@ -39,6 +39,7 @@ foreign key(userid) references usertbl(userid) on delete cascade on update restr
 create table contentstbl(
 contentsid INTEGER NOT NULL primary key GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 rssid integer not null,
+--未読既読フラグ。false=未読の意味
 readflg boolean not null default false,
 title varchar(1024),
 url varchar(1024),
@@ -49,3 +50,13 @@ upddate date,
 unique(rssid,url),
 foreign key (rssid) references feedtbl(rssid) on delete cascade on update restrict
 );
+
+--contentstblが更新されたらfeedtblのunread_countをtriggerで更新する
+create trigger trg_update_unreadcount
+after update on contentstbl
+referencing new as updaterow
+for each row
+update feedtbl set unread_count=(select count(*) from contentstbl where rssid=updaterow.rssid and readflg=false) where rssid=updaterow.rssid;
+
+drop trigger trg_update_unreadcount;
+update contentstbl set readflg = false where contentsid=121;
