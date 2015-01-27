@@ -67,7 +67,7 @@ public class RssReaderLogic {
      */
     public List<Feedtbl> feedList(String userid) {
         Logger.getLogger(RssReaderLogic.class.getName()).log(Level.SEVERE, "RssReaderLogic feedList called:" + userid, "");
-        Query q = em.createQuery("select object(o) from Feedtbl as o WHERE o.userid = :userid order by o.upddate", Feedtbl.class);
+        Query q = em.createQuery("select object(o) from Feedtbl as o WHERE o.userid = :userid order by o.unreadCount desc ,o.upddate desc", Feedtbl.class);
         q.setParameter("userid", new Usertbl(userid));
         return q.getResultList();
     }
