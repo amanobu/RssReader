@@ -57,6 +57,3 @@ after update on contentstbl
 referencing new as updaterow
 for each row
 update feedtbl set unread_count=(select count(*) from contentstbl where rssid=updaterow.rssid and readflg=false) where rssid=updaterow.rssid;
-
-drop trigger trg_update_unreadcount;
-update contentstbl set readflg = false where contentsid=121;
