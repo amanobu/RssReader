@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 /**
- *
+ * 基本的なDBアクセスを行うEJB
  * @author amanobu
  */
 @Stateless
@@ -113,8 +113,23 @@ public class RssReaderLogic {
         return usertbl;
     }
 
+    /**
+     * 記事の登録をします。
+     * URLで検索をし何か見つかったら登録しません
+     * @param contents 
+     */
     public void registContents(Contentstbl contents) {
-        em.persist(contents);
+        //TypedQuery<Contentstbl> query = em.createNamedQuery("Contentstbl.findByUrl",Contentstbl.class);
+        //Contentstbl registContents = query.setParameter("url", contents.getUrl()).getSingleResult();
+        Query q = em.createQuery("select object(o) from Contentstbl as o WHERE o.rssid = :rssid and o.url = :url", Contentstbl.class);
+        q.setParameter("rssid", contents.getRssid());
+        q.setParameter("url", contents.getUrl());
+        List<Contentstbl> registContents = q.getResultList();
+        if(null == registContents || registContents.isEmpty()){
+            em.persist(contents);
+        }else{
+            LogUtil.log(SUBLOGSTR, Level.INFO, "already added:",contents.getUrl());
+        }
     }
 
     /**
@@ -185,6 +200,7 @@ public class RssReaderLogic {
             //のように書くと
             //javax.servlet.ServletException: java.lang.IllegalStateException: Exception Description: Cannot use an EntityTransaction while using JTA.
             //となる。なので、こう書いた。JTAがトランザクション管理をしているため。もし自分でとなるとpersistence.xmlでNON-JTA-DATA-SOURCEを指定するか、あるいは、UserTransactionによってコンテナベースのトランザクションを用いるか選択する必要があるそうだ
+            //後でわかったことだが、EJBはメソッドの開始と終了がトランザクションの開始と終了なので上記の様に自前でトランザクションを設定できない
             em.persist(contents);
         }
     }
@@ -215,7 +231,7 @@ public class RssReaderLogic {
     private boolean check(Integer rssid, String userid) {
         Feedtbl feed = getFeed(rssid);
         if (!feed.getUserid().getUserid().equals(userid)) {
-            Logger.getLogger(RssReaderLogic.class.getName()).log(Level.SEVERE, "不正なアクセス:" + rssid + "," + userid + "," + feed.getUserid(), "");
+            Logger.getLogger(SUBLOGSTR).log(Level.SEVERE, "不正なアクセス:" + rssid + "," + userid + "," + feed.getUserid(), "");
             return false;
         } else {
             return true;
@@ -229,7 +245,7 @@ public class RssReaderLogic {
     public List<Integer> getAllRssId() {
         Query q = em.createNativeQuery("SELECT RSSID FROM FEEDTBL");
         List<Integer> list = q.getResultList();
-        LogUtil.log(RssReaderLogic.class.getName(), Level.INFO, "全件rssidList:", list);
+        LogUtil.log(SUBLOGSTR, Level.INFO, "全件rssidList:", list);
         return list;
     }
 
@@ -239,6 +255,7 @@ public class RssReaderLogic {
      * @param feed
      */
     public void updateFeed(Feedtbl feed) {
+        LogUtil.log(SUBLOGSTR, Level.INFO, "Feedtblの更新",feed.toString());
         em.merge(feed);
     }
 }
