@@ -60,6 +60,7 @@ public class FeedRegistPage implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, message);
             rsslogiccdi.updateFeed(feed.getRssid());
             LogUtil.log(FeedListPage.class.getName(), Level.INFO, feed.getRssid(),feed.getTitle(),feed.getUrl());
+            setUrl(null);
             //return "FeedList?faces-redirect=true";
         } catch (Exception e) {
             e.printStackTrace();
