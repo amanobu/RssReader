@@ -57,3 +57,10 @@ after update on contentstbl
 referencing new as updaterow
 for each row
 update feedtbl set unread_count=(select count(*) from contentstbl where rssid=updaterow.rssid and readflg=false) where rssid=updaterow.rssid;
+
+--contentstblに挿入されたらfeedtblのunread_countをtriggerで更新する
+create trigger trg_insert_contetstbl
+after insert on contentstbl
+referencing new as new
+for each row
+update feedtbl set unread_count=(select count(*) from contentstbl where rssid=new.rssid and readflg=false) where rssid=new.rssid;
