@@ -8,12 +8,10 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author amanobu
  */
 @Named(value = "contentsListPage")
-@ViewScoped
+@RequestScoped
 public class ContentsListPage implements Serializable {
 
     @EJB
@@ -75,17 +73,18 @@ public class ContentsListPage implements Serializable {
         LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "getContentsList called:", request.getRemoteUser(), "ConvsastionBean->", bean.toString());
         String user = request.getRemoteUser();
         bean.setSelectedRssid(getRssid());
-        setList(rsslogic.getContentsList(rssid, user));
+        List<Contentstbl> list = rsslogic.getContentsList(rssid, user);
+        //LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "getContentsList called:", request.getRemoteUser(), "ConvsastionBean->", bean.toString(),"list",list.toString());
+        setList(list);
     }
 
-    @PostConstruct
     public void getUnreadContentsList() {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext econtext = context.getExternalContext();
         //setRssid((Integer) econtext.getFlash().get("rssid"));
         setRssid(bean.getSelectedRssid());
         HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
-        LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "getContentsList called:", request.getRemoteUser(), "ConvsastionBean->", bean.toString());
+        LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "getUnreadContentsList called:", request.getRemoteUser(), "ConvsastionBean->", bean.toString());
         String user = request.getRemoteUser();
         bean.setSelectedRssid(getRssid());
         setList(rsslogic.getUnreadContentsList(rssid, user));
@@ -99,30 +98,24 @@ public class ContentsListPage implements Serializable {
         this.list = list;
     }
 
-    private boolean selectedAllView;
-
     private List<Contentstbl> list;
 
-    public boolean isSelectedAllView() {
-        return selectedAllView;
+    @PostConstruct
+    public void updateView() {
+        LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "updateView called:", bean.isSelectedAllView(), "ConvsastionBean->", bean.toString());
+        if (bean.isSelectedAllView()) {
+            getContentsList();
+        } else {
+            getUnreadContentsList();
+        }
     }
 
-    public void setSelectedAllView(boolean selectedAllView) {
-        this.selectedAllView = selectedAllView;
+    public void setViewFlg(boolean flg) {
+        LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "setViewFlg called:", flg, "ConvsastionBean->", bean.toString());
+        bean.setSelectedAllView(flg);
+        updateView();
     }
 
-    /*
-     やりたいことが実現できないため、コメントアウト
-     public void setSelectedAllViewFlag(boolean flag) {
-        
-     // ajaxで更新する場合@RequestScopedの場合一度状態が破棄されるため、flagの値が更新できない
-     //@ViewScopedにすれば解決する
-     //
-     LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "setSelectedAllViewFlag called:", "flag:", flag, "bean:", bean.toString());
-     this.selectedAllView = flag;
-     bean.setSelectedAllView(flag);
-     }
-     */
     /**
      * 既読未読フラグを全更新します
      *

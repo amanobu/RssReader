@@ -53,7 +53,8 @@ public class ConvsastionBean implements Serializable {
      */
     public ConvsastionBean() {
         LogUtil.log(this.getClass().getName(), Level.INFO, "ConvsastionBean initialized",selectedAllView);
-        
+        //初期表示時は未読で表示する為
+        selectedAllView = false;
     }
     
     @Override
