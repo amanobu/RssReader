@@ -62,6 +62,7 @@ public class ContentsListPage implements Serializable {
         String userid = request.getRemoteUser();
         LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "updateReadFlg called:", request.getRemoteUser(), "flag:", flag);
         rsslogic.updateReadflg(userid, contentsid, flag);
+        updateView();
     }
 
     public void getContentsList() {
@@ -128,5 +129,6 @@ public class ContentsListPage implements Serializable {
         String userid = request.getRemoteUser();
         LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "updateAllReadFlag called:", "rssid:", bean.getSelectedRssid(), "flag:", flag);
         rsslogic.updataAllReadflg(userid, bean.getSelectedRssid(), flag);
+        updateView();
     }
 }
