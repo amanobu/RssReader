@@ -69,8 +69,9 @@ public class RssReaderLogicCDI {
             contents.setRegdate(now);
             LogUtil.log(SUBLOGSTR, Level.ALL, "登録する記事", contents.getTitle());
             try {
-                rsslogic.registContents(contents);
-                successflg = true;
+                if(rsslogic.registContents(contents)){
+                    successflg = true;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 LogUtil.log(SUBLOGSTR, Level.ALL, "登録失敗した記事Exception:", contents.getTitle(), e.getLocalizedMessage());
