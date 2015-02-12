@@ -118,7 +118,7 @@ public class RssReaderLogic {
      * URLで検索をし何か見つかったら登録しません
      * @param contents 
      */
-    public void registContents(Contentstbl contents) {
+    public boolean registContents(Contentstbl contents) {
         //TypedQuery<Contentstbl> query = em.createNamedQuery("Contentstbl.findByUrl",Contentstbl.class);
         //Contentstbl registContents = query.setParameter("url", contents.getUrl()).getSingleResult();
         Query q = em.createQuery("select object(o) from Contentstbl as o WHERE o.rssid = :rssid and o.url = :url", Contentstbl.class);
@@ -127,8 +127,10 @@ public class RssReaderLogic {
         List<Contentstbl> registContents = q.getResultList();
         if(null == registContents || registContents.isEmpty()){
             em.persist(contents);
+            return true;
         }else{
             LogUtil.log(SUBLOGSTR, Level.INFO, "already added:",contents.getUrl());
+            return false;
         }
     }
 
