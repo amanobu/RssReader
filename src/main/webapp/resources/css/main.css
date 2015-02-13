@@ -1,19 +1,46 @@
-/*
-input[type=submit],input[type=button]{
-    background: -moz-linear-gradient(top, #fff, #F1F1F1 1%, #F1F1F1 50%, #DFDFDF 99%, #ccc);
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), color-stop(0.01, #F1F1F1), color-stop(0.5, #F1F1F1), color-stop(0.99, #DFDFDF), to(#ccc));
-    -moz-box-shadow: 1px 1px 2px #E7E7E7;
-    -webkit-box-shadow: 1px 1px 2px #E7E7E7;
-    width: 100%;
+.myclass_unread{
+    /*最優先で適用させるため*/
+    font-weight: bold !important;
 }
-input[type=submit]:hover,input[type=button]:hover	{
-    background: -moz-linear-gradient(top, #fff, #e1e1e1 1%, #e1e1e1 50%, #cfcfcf 99%, #ccc);
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), color-stop(0.01, #e1e1e1), color-stop(0.5, #e1e1e1), color-stop(0.99, #cfcfcf), to(#ccc));
-    width: 100%;
+.myclass_checkupdate .myclass_feeddelete{
+    text-align: right !important;
 }
-input[type=submit]:active,input[type=button]:active	{
-    background: #ccc;
-    padding: 6px 20px 4px;
-    width: 100%;
+.myclass_feeddelete{
+    text-align: right !important;
 }
-*/
+
+#menu{
+    position: fixed !important; 
+    position: relative ;
+    top: 0; /* 位置(上0px) */
+    left: 0; /* 位置(右0px) */
+    width: 100%; /* 横幅100%　*/
+    //height: 140px; /* 縦幅140px */
+    background-color: white;
+}
+#menu ul>li{
+    float:left;
+    width:200px;
+    font-size:14px;
+    text-align:center;
+    //padding:4px;
+    background:#ccc;
+    margin-right:10px;
+    border-radius:4px;/*角を丸くする*/
+    text-shadow:0 1px 0 #fff;
+    list-style:none/*ポチを消す*/
+}
+
+#menu ul>li:hover{
+    background:#ddd;
+}
+#menu ul>li>a{
+    text-decoration:none;
+    display:block;/*これで文字だけがリンクではなく、四角全体がリンクになる*/
+}
+
+
+#main{
+    padding-top:40px;
+    width:100%;/*floatを指定すると必ずwidthはしていないといけないらしい*/
+}
