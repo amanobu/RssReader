@@ -12,8 +12,6 @@
     </h:head>
     <h:body>
         <h:form>
-            <h:messages globalOnly="false" styleClass="error" showSummary="true" showDetail="true" layout="table" />  
-            <h:outputText value="一件も登録されていません" rendered="#{empty feedListPage.feedList}" />
             <div id="menu">
                 <ul>
                     <li><p:commandLink value="登録" action="/app/reader/FeedRegist.xhtml" ajax="false"/></li>
@@ -22,12 +20,16 @@
                 </ul>
             </div>
             <div id="main">
+                <h:messages globalOnly="false" styleClass="error" showSummary="true" showDetail="true" layout="table" />  
+                <h:outputText value="一件も登録されていません" rendered="#{empty feedListPage.feedList}" />
                 <p:dataList id="datalist" value="#{feedListPage.feedList}" var="c" type="definition" rendered="#{not empty feedListPage.feedList}" >
-                    <p:commandLink value="#{c.title}" action="#{feedListPage.getContentsList(c.rssid)}" ajax="false" styleClass="#{feedListPage.getUnreadCount(c.rssid) gt 0 ? 'myclass_unread' : ''} "/>, 
-                    <p:commandLink action="#{feedListPage.feedUpdate(c.rssid)}" update="datalist" value="更新確認" class="myclass_checkupdate"/> ,
-                    <p:commandLink action="#{feedListPage.deleteFeed(c.rssid)}" update="datalist" value="削除" ajax="false" class="myclass_feeddelete">
-                        <p:confirm header="確認" message="削除してもよろしいですか？" icon="ui-icon-alert"/>
-                    </p:commandLink>
+                    <div class="myclass_feed_line">
+                        <p:commandLink value="#{c.title}" action="#{feedListPage.getContentsList(c.rssid)}" ajax="false" styleClass="#{feedListPage.getUnreadCount(c.rssid) gt 0 ? 'myclass_unread' : ''} "/>
+                        <p:commandLink action="#{feedListPage.feedUpdate(c.rssid)}" update="datalist" class="ui-icon ui-icon-refresh myclass_checkupdate" />
+                        <p:commandLink action="#{feedListPage.deleteFeed(c.rssid)}" update="datalist" ajax="false" class="ui-icon ui-icon-circle-close myclass_feeddelete">
+                            <p:confirm header="確認" message="削除してもよろしいですか？" icon="ui-icon-alert"/>
+                        </p:commandLink>
+                    </div>
                 </p:dataList>
             </div>
             <p:confirmDialog global="true">

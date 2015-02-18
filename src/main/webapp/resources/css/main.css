@@ -1,13 +1,19 @@
+
+.myclass_feed_line{
+    overflow: hidden;
+}
 .myclass_unread{
     /*最優先で適用させるため*/
     font-weight: bold !important;
+    float:left;
 }
-.myclass_checkupdate .myclass_feeddelete{
-    text-align: right !important;
+.myclass_checkupdate{
+    float:right;
 }
 .myclass_feeddelete{
-    text-align: right !important;
+    float:right;
 }
+
 
 #menu{
     position: fixed !important; 
@@ -43,4 +49,8 @@
 #main{
     padding-top:40px;
     width:100%;/*floatを指定すると必ずwidthはしていないといけないらしい*/
+}
+
+dt:hover{
+    background:#ccc;
 }
