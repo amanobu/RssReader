@@ -27,9 +27,10 @@
 
                 <p:dataList id="contentslist" value="#{contentsListPage.getList()}" var="c" type="definition" rendered="#{not empty contentsListPage.getList()}">
                     <p:panel id="basic" header="#{c.title}" >
-                        <h:outputText value="#{c.contents}"/>
-                        <p:link value="　Link　" href="#{c.url}" />　／　
+                        <p:link value="　Link　" href="#{c.url}" target="_blank" />　／　
                         <p:commandLink value="#{c.readflg ? '　既読　' : '　未読　'}" action="#{contentsListPage.updateReadFlg(c.contentsid,!c.readflg)}" update="contentslist" ajax="true"/>
+                        <br/>
+                        <h:outputText value="#{utilBean.nomalizeFeedContents(c.contents)}" escape="false"/>
                     </p:panel>
                 </p:dataList>
             </div>
