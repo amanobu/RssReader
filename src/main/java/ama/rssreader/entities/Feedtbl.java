@@ -42,6 +42,9 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Feedtbl.findByRegdate", query = "SELECT f FROM Feedtbl f WHERE f.regdate = :regdate"),
     @NamedQuery(name = "Feedtbl.findByUpddate", query = "SELECT f FROM Feedtbl f WHERE f.upddate = :upddate")})
 public class Feedtbl implements Serializable {
+    @JoinColumn(name = "CATEGORYID", referencedColumnName = "CATEGORYID")
+    @ManyToOne
+    private Categorytbl categoryid;
     @Column(name = "UNREAD_COUNT")
     private Integer unreadCount;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "rssid")
@@ -183,6 +186,14 @@ public class Feedtbl implements Serializable {
 
     public void setContentstblCollection(Collection<Contentstbl> contentstblCollection) {
         this.contentstblCollection = contentstblCollection;
+    }
+
+    public Categorytbl getCategoryid() {
+        return categoryid;
+    }
+
+    public void setCategoryid(Categorytbl categoryid) {
+        this.categoryid = categoryid;
     }
     
 }

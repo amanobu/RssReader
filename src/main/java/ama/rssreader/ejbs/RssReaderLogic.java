@@ -1,5 +1,6 @@
 package ama.rssreader.ejbs;
 
+import ama.rssreader.entities.Categorytbl;
 import ama.rssreader.entities.Contentstbl;
 import ama.rssreader.entities.Feedtbl;
 import ama.rssreader.login.entities.Usertbl;
@@ -17,6 +18,7 @@ import javax.persistence.Query;
 
 /**
  * 基本的なDBアクセスを行うEJB
+ *
  * @author amanobu
  */
 @Stateless
@@ -114,9 +116,9 @@ public class RssReaderLogic {
     }
 
     /**
-     * 記事の登録をします。
-     * URLで検索をし何か見つかったら登録しません
-     * @param contents 
+     * 記事の登録をします。 URLで検索をし何か見つかったら登録しません
+     *
+     * @param contents
      */
     public boolean registContents(Contentstbl contents) {
         //TypedQuery<Contentstbl> query = em.createNamedQuery("Contentstbl.findByUrl",Contentstbl.class);
@@ -125,11 +127,11 @@ public class RssReaderLogic {
         q.setParameter("rssid", contents.getRssid());
         q.setParameter("url", contents.getUrl());
         List<Contentstbl> registContents = q.getResultList();
-        if(null == registContents || registContents.isEmpty()){
+        if (null == registContents || registContents.isEmpty()) {
             em.persist(contents);
             return true;
-        }else{
-            LogUtil.log(SUBLOGSTR, Level.INFO, "already added:",contents.getUrl());
+        } else {
+            LogUtil.log(SUBLOGSTR, Level.INFO, "already added:", contents.getUrl());
             return false;
         }
     }
@@ -153,9 +155,10 @@ public class RssReaderLogic {
 
     /**
      * 未読の記事一覧の取得
+     *
      * @param rssid
      * @param userid
-     * @return 
+     * @return
      */
     public List<Contentstbl> getUnreadContentsList(Integer rssid, String userid) {
         if (!check(rssid, userid)) {
@@ -257,7 +260,70 @@ public class RssReaderLogic {
      * @param feed
      */
     public void updateFeed(Feedtbl feed) {
-        LogUtil.log(SUBLOGSTR, Level.INFO, "Feedtblの更新",feed.toString());
+        LogUtil.log(SUBLOGSTR, Level.INFO, "Feedtblの更新", feed.toString());
         em.merge(feed);
+    }
+
+    /**
+     * 新規カテゴリの登録を行う
+     * @param userid
+     * @param strCategoryName 
+     */
+    public void addCategory(String userid, String strCategoryName) {
+        Usertbl user = new Usertbl();
+        user.setUserid(userid);
+        Categorytbl categorytbl = new Categorytbl();
+        categorytbl.setUserid(user);
+        categorytbl.setCategoryname(strCategoryName);
+        categorytbl.setRegdate(new Date());
+        em.persist(categorytbl);
+    }
+
+    /**
+     * 特定ユーザのカテゴリ一覧を取得する
+     *
+     * @param userid
+     * @return 
+     */
+    public List<Categorytbl> getCategoryList(String userid) {
+        Query q = em.createQuery("select count(o) from Categorytbl as o WHERE o.userid = :userid", Categorytbl.class);
+        q.setParameter("userid", getUser(userid));
+        return q.getResultList();
+    }
+
+    /**
+     * カテゴリ単体取得
+     * @param categoryid
+     * @return 
+     */
+    public Categorytbl getCategory(Integer categoryid){
+        return em.find(Categorytbl.class, categoryid);
+    }
+
+    /**
+     * 既存のカテゴリ名を変更する
+     * @param userid
+     * @param categoryid
+     * @param strCategoryName 
+     */
+    public void updateCategoryName(String userid, Integer categoryid, String strCategoryName) {
+        Categorytbl categorytbl = getCategory(categoryid);
+        if(categorytbl.getUserid().getUserid().equals(userid)){
+            categorytbl.setCategoryname(strCategoryName);
+            em.persist(categorytbl);
+        }
+    }
+
+    /**
+     * 既存のカテゴリに既存のFeedを登録します
+     * @param categoryid
+     * @param rssid 
+     */
+    public void regCategoryToFeed(Integer categoryid, Integer rssid) {
+        Feedtbl feedtbl = getFeed(rssid);
+        Categorytbl categorytbl = getCategory(categoryid);
+        feedtbl.setCategoryid(categorytbl);
+        feedtbl.setUpddate(new Date());
+        em.merge(feedtbl);
     }
 }

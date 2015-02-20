@@ -4,7 +4,11 @@ import ama.rssreader.ejbs.RssReaderLogic;
 import ama.rssreader.entities.Feedtbl;
 import ama.rssreader.util.LogUtil;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -14,6 +18,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import lombok.Data;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.DefaultSubMenu;
+import org.primefaces.model.menu.MenuModel;
 
 /**
  *
@@ -21,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Named(value = "feedListPage")
 @RequestScoped
+@Data
 public class FeedListPage implements Serializable {
 
     @EJB
@@ -57,14 +67,6 @@ public class FeedListPage implements Serializable {
 
     private int rssid;
 
-    public int getRssid() {
-        return rssid;
-    }
-
-    public void setRssid(int rssid) {
-        this.rssid = rssid;
-    }
-
     public String getContentsList(Integer rssid) {
 
         FacesContext context = FacesContext.getCurrentInstance();
@@ -98,5 +100,39 @@ public class FeedListPage implements Serializable {
         ExternalContext econtext = context.getExternalContext();
         HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
         rsslogic.delFeed(request.getRemoteUser(), rssid);
+    }
+
+    private MenuModel model;
+
+    public void updateMenuModel() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext econtext = context.getExternalContext();
+        HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
+        String user = request.getRemoteUser();
+        MenuModel newModel = new DefaultMenuModel();
+        List<Feedtbl> feedlist = getFeedList();
+        Set<String> categoryset = new HashSet();
+        for (Feedtbl feedtbl : feedlist) {
+            String strCategory = feedtbl.getCategoryid().getCategoryname();
+            if(!categoryset.contains(strCategory)){
+                categoryset.add(strCategory);
+            }
+        }
+        Map<String,DefaultSubMenu> defaultSubMenuMap = new HashMap<>();
+        for (String categoryname : categoryset){
+            defaultSubMenuMap.put(categoryname, new DefaultSubMenu(categoryname));
+        }
+        
+        for (Feedtbl feedtbl : feedlist) {
+            String strCategory = feedtbl.getCategoryid().getCategoryname();
+            DefaultSubMenu submenu = defaultSubMenuMap.get(strCategory);
+            DefaultMenuItem item = new DefaultMenuItem(feedtbl.getTitle());
+            item.setOnclick(feedtbl.getTitle());
+            submenu.addElement(item);
+        }
+        
+        for (DefaultSubMenu menu: defaultSubMenuMap.values()){
+            model.addElement(menu);
+        }
     }
 }

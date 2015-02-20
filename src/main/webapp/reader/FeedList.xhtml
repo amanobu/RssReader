@@ -12,61 +12,65 @@
     </h:head>
     <h:body>
         <h:form>
-            <div id="menu">
-                <ul>
-                    <li><p:commandLink value="登録" action="/app/reader/FeedRegist.xhtml" ajax="false"/></li>
-                    <li><p:commandLink value="ログアウト" action="#{indexPage.logout()}" ajax="false"/></li>
-                    <li><p:commandLink value="ユーザ削除" action="/app/user-manage/remove.xhtml" ajax="false"/></li>
-                </ul>
+            <div id="container">
+                <div id="menu">
+                    <ul>
+                        <li><p:commandLink value="登録" action="/app/reader/FeedRegist.xhtml" ajax="false"/></li>
+                        <li><p:commandLink value="ログアウト" action="#{indexPage.logout()}" ajax="false"/></li>
+                        <li><p:commandLink value="ユーザ削除" action="/app/user-manage/remove.xhtml" ajax="false"/></li>
+                    </ul>
+                </div>
+                <div id="category">
+                    <p:menu model="#{feedListPage.model}" />
+                </div>
+                <div id="main">
+                    <h:messages globalOnly="false" styleClass="error" showSummary="true" showDetail="true" layout="table" />  
+                    <h:outputText value="一件も登録されていません" rendered="#{empty feedListPage.feeds}" />
+                    <p:dataList id="datalist" value="#{feedListPage.feeds}" var="c" type="definition" rendered="#{(not empty feedListPage.feeds) and (feedListPage.feeds.size() > 0)}" >
+                        <div class="myclass_feed_line">
+                            <p:commandLink value="#{c.title}" action="#{feedListPage.getContentsList(c.rssid)}" ajax="false" styleClass="#{feedListPage.getUnreadCount(c.rssid) > 0 ? 'myclass_unread' : ''} "/>
+                            <p:commandLink action="#{feedListPage.feedUpdate(c.rssid)}" update="datalist" class="ui-icon ui-icon-refresh myclass_checkupdate" />
+                            <p:commandLink action="#{feedListPage.deleteFeed(c.rssid)}" update="datalist" ajax="false" class="ui-icon ui-icon-circle-close myclass_feeddelete">
+                                <p:confirm header="確認" message="削除してもよろしいですか？" icon="ui-icon-alert"/>
+                            </p:commandLink>
+                        </div>
+                    </p:dataList>
+                </div>
+                <p:confirmDialog global="true">
+                    <p:commandButton value="やっちゃいなよ" type="button" styleClass="ui-confirmdialog-yes"
+                                     icon="ui-icon-check"/>
+                    <p:commandButton value="やっぱやーめた" type="button" styleClass="ui-confirmdialog-no"
+                                     icon="ui-icon-close"/>
+                </p:confirmDialog>
+                <ui:remove>
+                    datatableは使わずp:dataListにした
+                    <h:dataTable value="#{feedListPage.feedList}" var="c" border="1" rendered="#{not empty feedListPage.feedList}">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="タイトル" />
+                            </f:facet>
+                            <h:outputLink value="#{c.url}">
+                                <h:outputText value="#{c.title}" />
+                            </h:outputLink>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="未読記事数" />
+                            </f:facet>
+                            <h:outputText value="#{feedListPage.getUnreadCount(c.rssid)}" />
+                        </h:column>
+                        <h:column>
+                            <h:commandButton value="記事一覧" style="font-size: 14px;" action="#{feedListPage.getContentsList(c.rssid)}" />
+                        </h:column>
+                        <h:column>
+                            <h:commandButton value="確認" style="font-size: 14px;" action="#{feedListPage.feedUpdate(c.rssid)}"/>
+                        </h:column>
+                        <h:column>
+                            <h:commandButton value="削除" style="font-size: 14px;" action="#{feedListPage.deleteFeed(c.rssid)}"/>
+                        </h:column>
+                    </h:dataTable>
+                </ui:remove>
             </div>
-            <div id="main">
-                <h:messages globalOnly="false" styleClass="error" showSummary="true" showDetail="true" layout="table" />  
-                <h:outputText value="一件も登録されていません" rendered="#{empty feedListPage.feeds}" />
-                <p:dataList id="datalist" value="#{feedListPage.feeds}" var="c" type="definition" rendered="#{(not empty feedListPage.feeds) and (feedListPage.feeds.size() > 0)}" >
-                    <div class="myclass_feed_line">
-                        <p:commandLink value="#{c.title}" action="#{feedListPage.getContentsList(c.rssid)}" ajax="false" styleClass="#{feedListPage.getUnreadCount(c.rssid) > 0 ? 'myclass_unread' : ''} "/>
-                        <p:commandLink action="#{feedListPage.feedUpdate(c.rssid)}" update="datalist" class="ui-icon ui-icon-refresh myclass_checkupdate" />
-                        <p:commandLink action="#{feedListPage.deleteFeed(c.rssid)}" update="datalist" ajax="false" class="ui-icon ui-icon-circle-close myclass_feeddelete">
-                            <p:confirm header="確認" message="削除してもよろしいですか？" icon="ui-icon-alert"/>
-                        </p:commandLink>
-                    </div>
-                </p:dataList>
-            </div>
-            <p:confirmDialog global="true">
-                <p:commandButton value="やっちゃいなよ" type="button" styleClass="ui-confirmdialog-yes"
-                                 icon="ui-icon-check"/>
-                <p:commandButton value="やっぱやーめた" type="button" styleClass="ui-confirmdialog-no"
-                                 icon="ui-icon-close"/>
-            </p:confirmDialog>
-            <ui:remove>
-                datatableは使わずp:dataListにした
-                <h:dataTable value="#{feedListPage.feedList}" var="c" border="1" rendered="#{not empty feedListPage.feedList}">
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="タイトル" />
-                        </f:facet>
-                        <h:outputLink value="#{c.url}">
-                            <h:outputText value="#{c.title}" />
-                        </h:outputLink>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="未読記事数" />
-                        </f:facet>
-                        <h:outputText value="#{feedListPage.getUnreadCount(c.rssid)}" />
-                    </h:column>
-                    <h:column>
-                        <h:commandButton value="記事一覧" style="font-size: 14px;" action="#{feedListPage.getContentsList(c.rssid)}" />
-                    </h:column>
-                    <h:column>
-                        <h:commandButton value="確認" style="font-size: 14px;" action="#{feedListPage.feedUpdate(c.rssid)}"/>
-                    </h:column>
-                    <h:column>
-                        <h:commandButton value="削除" style="font-size: 14px;" action="#{feedListPage.deleteFeed(c.rssid)}"/>
-                    </h:column>
-                </h:dataTable>
-            </ui:remove>
-
         </h:form>
     </h:body>
 </html>
