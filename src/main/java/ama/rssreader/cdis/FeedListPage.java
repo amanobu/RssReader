@@ -6,6 +6,7 @@ import ama.rssreader.util.LogUtil;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -14,6 +15,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import lombok.Data;
 
 /**
  *
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Named(value = "feedListPage")
 @RequestScoped
+@Data
 public class FeedListPage implements Serializable {
 
     @EJB
@@ -32,19 +35,24 @@ public class FeedListPage implements Serializable {
     @Inject
     ConvsastionBean bean;
 
+    private int rssid;
+
+    private List<Feedtbl> feeds;
+
     /**
      * Creates a new instance of FeedListPage
      */
     public FeedListPage() {
     }
 
-    public List<Feedtbl> getFeedList() {
+    @PostConstruct
+    public void getFeedList() {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext econtext = context.getExternalContext();
         HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
         LogUtil.log(FeedListPage.class.getName(), Level.INFO, "getFeedList called:", request.getRemoteUser());
 
-        return rsslogic.feedList(request.getRemoteUser());
+        setFeeds(rsslogic.feedList(request.getRemoteUser()));
     }
 
     public void feedUpdate(Integer rssid) {
@@ -54,8 +62,6 @@ public class FeedListPage implements Serializable {
             LogUtil.log(FeedListPage.class.getName(), Level.INFO, "feedUpdate catchExcepton", e.getLocalizedMessage());
         }
     }
-
-    private int rssid;
 
     public int getRssid() {
         return rssid;
@@ -98,5 +104,7 @@ public class FeedListPage implements Serializable {
         ExternalContext econtext = context.getExternalContext();
         HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
         rsslogic.delFeed(request.getRemoteUser(), rssid);
+        //リストを更新したので最新に更新する
+        getFeedList();
     }
 }
