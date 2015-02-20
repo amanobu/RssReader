@@ -7,10 +7,8 @@ package ama.rssreader.entities;
 
 import ama.rssreader.login.entities.Usertbl;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,12 +18,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -39,13 +37,10 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Feedtbl.findByTitle", query = "SELECT f FROM Feedtbl f WHERE f.title = :title"),
     @NamedQuery(name = "Feedtbl.findByUrl", query = "SELECT f FROM Feedtbl f WHERE f.url = :url"),
     @NamedQuery(name = "Feedtbl.findByDescription", query = "SELECT f FROM Feedtbl f WHERE f.description = :description"),
+    @NamedQuery(name = "Feedtbl.findByUnreadCount", query = "SELECT f FROM Feedtbl f WHERE f.unreadCount = :unreadCount"),
     @NamedQuery(name = "Feedtbl.findByRegdate", query = "SELECT f FROM Feedtbl f WHERE f.regdate = :regdate"),
     @NamedQuery(name = "Feedtbl.findByUpddate", query = "SELECT f FROM Feedtbl f WHERE f.upddate = :upddate")})
 public class Feedtbl implements Serializable {
-    @Column(name = "UNREAD_COUNT")
-    private Integer unreadCount;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "rssid")
-    private Collection<Contentstbl> contentstblCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,6 +60,8 @@ public class Feedtbl implements Serializable {
     @Size(max = 1024)
     @Column(name = "DESCRIPTION")
     private String description;
+    @Column(name = "UNREAD_COUNT")
+    private Integer unreadCount;
     @Column(name = "REGDATE")
     @Temporal(TemporalType.DATE)
     private Date regdate;
@@ -120,6 +117,14 @@ public class Feedtbl implements Serializable {
         this.description = description;
     }
 
+    public Integer getUnreadCount() {
+        return unreadCount;
+    }
+
+    public void setUnreadCount(Integer unreadCount) {
+        this.unreadCount = unreadCount;
+    }
+
     public Date getRegdate() {
         return regdate;
     }
@@ -166,23 +171,7 @@ public class Feedtbl implements Serializable {
 
     @Override
     public String toString() {
-        return "ama.rssreader.cdis.Feedtbl[ rssid=" + rssid + " ]";
-    }
-
-    public Integer getUnreadCount() {
-        return unreadCount;
-    }
-
-    public void setUnreadCount(Integer unreadCount) {
-        this.unreadCount = unreadCount;
-    }
-
-    public Collection<Contentstbl> getContentstblCollection() {
-        return contentstblCollection;
-    }
-
-    public void setContentstblCollection(Collection<Contentstbl> contentstblCollection) {
-        this.contentstblCollection = contentstblCollection;
+        return "ama.rssreader.entities.Feedtbl[ rssid=" + rssid + " ]";
     }
     
 }
