@@ -21,10 +21,10 @@
             </div>
             <div id="main">
                 <h:messages globalOnly="false" styleClass="error" showSummary="true" showDetail="true" layout="table" />  
-                <h:outputText value="一件も登録されていません" rendered="#{empty feedListPage.feedList}" />
-                <p:dataList id="datalist" value="#{feedListPage.feedList}" var="c" type="definition" rendered="#{not empty feedListPage.feedList}" >
+                <h:outputText value="一件も登録されていません" rendered="#{empty feedListPage.feeds}" />
+                <p:dataList id="datalist" value="#{feedListPage.feeds}" var="c" type="definition" rendered="#{(not empty feedListPage.feeds) and (feedListPage.feeds.size() > 0)}" >
                     <div class="myclass_feed_line">
-                        <p:commandLink value="#{c.title}" action="#{feedListPage.getContentsList(c.rssid)}" ajax="false" styleClass="#{feedListPage.getUnreadCount(c.rssid) gt 0 ? 'myclass_unread' : ''} "/>
+                        <p:commandLink value="#{c.title}" action="#{feedListPage.getContentsList(c.rssid)}" ajax="false" styleClass="#{feedListPage.getUnreadCount(c.rssid) > 0 ? 'myclass_unread' : ''} "/>
                         <p:commandLink action="#{feedListPage.feedUpdate(c.rssid)}" update="datalist" class="ui-icon ui-icon-refresh myclass_checkupdate" />
                         <p:commandLink action="#{feedListPage.deleteFeed(c.rssid)}" update="datalist" ajax="false" class="ui-icon ui-icon-circle-close myclass_feeddelete">
                             <p:confirm header="確認" message="削除してもよろしいですか？" icon="ui-icon-alert"/>
