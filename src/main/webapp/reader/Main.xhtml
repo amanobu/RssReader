@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>登録一覧</title>
+        <h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
+    </h:head>
+    <h:body>
+        <h:form>
+            <div id="menu">
+                <ul>
+                    <li><p:commandLink value="登録" action="/app/reader/FeedRegist.xhtml" ajax="false"/></li>
+                    <li><p:commandLink value="ログアウト" action="#{indexPage.logout()}" ajax="false"/></li>
+                    <li><p:commandLink value="ユーザ削除" action="/app/user-manage/remove.xhtml" ajax="false"/></li>
+                </ul>
+            </div>
+            <div id="category">
+                <p:menu model="#{mainPage.model}" />
+            </div>
+            <div id="main">
+                <p:dataList id="contentslist" value="#{mainPage.list}" var="c" type="definition">
+                    <p:panel id="basic" header="#{c.title}" >
+                        <p:link value="　Link　" href="#{c.url}" target="_blank" />　／　
+                        <p:commandLink value="#{c.readflg ? '　既読　' : '　未読　'}" action="#{mainPage.updateReadFlg(c.contentsid,!c.readflg)}" update="contentslist" ajax="true"/>
+                        <br/>
+                        <h:outputText value="#{utilBean.nomalizeFeedContents(c.contents)}" escape="false"/>
+                    </p:panel>
+                </p:dataList>
+            </div>
+        </h:form>
+    </h:body>
+</html>
+

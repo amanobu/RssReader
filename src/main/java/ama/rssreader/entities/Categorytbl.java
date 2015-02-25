@@ -7,6 +7,7 @@ package ama.rssreader.entities;
 
 import ama.rssreader.login.entities.Usertbl;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -37,6 +39,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Categorytbl.findByRegdate", query = "SELECT c FROM Categorytbl c WHERE c.regdate = :regdate"),
     @NamedQuery(name = "Categorytbl.findByUpddata", query = "SELECT c FROM Categorytbl c WHERE c.upddata = :upddata")})
 public class Categorytbl implements Serializable {
+    @OneToMany(mappedBy = "categoryid")
+    private Collection<Feedtbl> feedtblCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -133,6 +137,14 @@ public class Categorytbl implements Serializable {
     @Override
     public String toString() {
         return "ama.rssreader.entities.Categorytbl[ categoryid=" + categoryid + " ]";
+    }
+
+    public Collection<Feedtbl> getFeedtblCollection() {
+        return feedtblCollection;
+    }
+
+    public void setFeedtblCollection(Collection<Feedtbl> feedtblCollection) {
+        this.feedtblCollection = feedtblCollection;
     }
     
 }
