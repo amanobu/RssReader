@@ -1,5 +1,5 @@
 html,body,form{
-    height: 100%;             /* #containerのmin-heightに対して必要なもの */
+    height: 100%;
 }
 
 #container{

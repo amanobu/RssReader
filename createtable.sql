@@ -29,11 +29,13 @@ userid VARCHAR(128) not null,
 TITLE VARCHAR(1024) NOT NULL,
 URL VARCHAR(1024) NOT NULL,
 description varchar(1024) ,
+categoryid integer,
 unread_count integer default 0,
 regdate date,
 upddate date,
 unique(userid,url),
-foreign key(userid) references usertbl(userid) on delete cascade on update restrict
+foreign key(userid) references usertbl(userid) on delete cascade on update restrict,
+foreign key(categoryid) references categorytbl(categoryid) on delete cascade on update restrict
 );
 
 create table contentstbl(
