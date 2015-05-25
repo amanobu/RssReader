@@ -1,5 +1,6 @@
 html,body,form{
     height: 100%;
+    overflow: hidden;
 }
 
 #container{
@@ -25,16 +26,16 @@ html,body,form{
     font-size:14px;
     text-align:center;
     //padding:4px;
-    background:#ccc;
+    //background:#ccc;
     margin-right:10px;
     border-radius:4px;/*角を丸くする*/
-    text-shadow:0 1px 0 #fff;
+    //text-shadow:0 1px 0 #fff;
     list-style:none;/*ポチを消す*/
     margin: 0 auto;
 }
 
 #menu ul>li:hover{
-    background:#ddd;
+    //background:#ddd;
 }
 #menu ul>li>a{
     text-decoration:none;
@@ -44,6 +45,7 @@ html,body,form{
 
 
 #category{
+    overflow: scroll;
     margin-top: 50px;
     float:left;
     width:30%;
@@ -54,6 +56,7 @@ html,body,form{
 }
 
 #main{
+    overflow: scroll;
     margin-top: 50px;
     float:left;
     width:69%;
@@ -63,7 +66,7 @@ html,body,form{
 
 #main div{
     height:100%;
-    min-height: 100%;  
+    min-height: 100%;
 }
 
 dt:hover{

@@ -3,15 +3,18 @@
     <persistence-unit name="ama_RssReader_war_1.0-SNAPSHOTPU" transaction-type="JTA">
         <jta-data-source>jdbc/rssreader</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
-
+        <shared-cache-mode>NONE</shared-cache-mode>
         <properties>
+            <!--
             <property name="eclipselink.logging.level" value="ALL"/>
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.logging.timestamp" value="true" />
             <property name="eclipselink.logging.session" value="true" />
             <property name="eclipselink.logging.thread" value="true" />
-            <property name="eclipselink.logging.exceptions" value="true"/>
+            <property name="eclipselink.logging.exceptions" value="true"/>-->
         </properties>
+        <!--これでJPAのcacheが無効になるらしい-->
+        
 
     </persistence-unit>
 </persistence>

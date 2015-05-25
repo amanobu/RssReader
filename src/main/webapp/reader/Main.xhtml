@@ -9,14 +9,17 @@
     <h:head>
         <title>登録一覧</title>
         <h:outputStylesheet library="css" name="main.css"></h:outputStylesheet>
+        <h:outputScript library="primefaces" name="jquery/jquery.js" />
+        <h:outputScript library="js" name="jquery.inview.js" />
+        <h:outputScript library="js" name="my.js" />
     </h:head>
     <h:body>
         <h:form>
             <div id="menu">
-                <ul>
-                    <li><p:commandLink value="登録" action="/app/reader/FeedRegist.xhtml" ajax="false"/></li>
-                    <li><p:commandLink value="ログアウト" action="#{indexPage.logout()}" ajax="false"/></li>
-                    <li><p:commandLink value="ユーザ削除" action="/app/user-manage/remove.xhtml" ajax="false"/></li>
+                <ul class="ui-menu-list ui-helper-reset">
+                    <li class="ui-menuitem ui-widget ui-corner-all"><p:commandButton value="登録" action="/app/reader/FeedRegist.xhtml" ajax="false" styleClass="ui-menuitem-link ui-corner-all"/></li>
+                    <li class="ui-menuitem ui-widget ui-corner-all"><p:commandButton value="ログアウト" action="#{indexPage.logout()}" ajax="false"/></li>
+                    <li class="ui-menuitem ui-widget ui-corner-all"><p:commandButton value="ユーザ削除" action="/app/user-manage/remove.xhtml" ajax="false"/></li>
                 </ul>
             </div>
             <div id="category">

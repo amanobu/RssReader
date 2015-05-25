@@ -26,7 +26,7 @@ public class IndexPage implements Serializable {
 
     private String userid;
     private String pw;
-    
+
     @EJB
     UserRegistManager logic;
 
@@ -43,9 +43,9 @@ public class IndexPage implements Serializable {
     @PostConstruct
     public void init() {
         /*
-        http://stackoverflow.com/questions/2206911/performing-user-authentication-in-java-ee-jsf-using-j-security-check
-        の内容をコピペ
-        */
+         http://stackoverflow.com/questions/2206911/performing-user-authentication-in-java-ee-jsf-using-j-security-check
+         の内容をコピペ
+         */
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         originalURL = (String) externalContext.getRequestMap().get(RequestDispatcher.FORWARD_REQUEST_URI);
 

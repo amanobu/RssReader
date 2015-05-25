@@ -42,7 +42,7 @@ Java EE 7の機能の学習のため
     * cd JAVA_HOME/db/bin
     * ij
     * DBを作成します  
-	connect 'jdbc:derby://localhost:1527/READER;create=true;user=ユーザ名;password=パスワード'
+	connect 'jdbc:derby://localhost:1527/RSSREADER;create=true;user=ユーザ名;password=パスワード'
     * tableの作成  
 	createtable.sqlの中身を実行する
 1. GlassFishの準備
@@ -57,6 +57,13 @@ Java EE 7の機能の学習のため
 	  create-jdbc-resource --connectionpoolid RssReaderPool jdbc/rssreader
     * Form認証用のJDBC Realmの作成  
 	  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property jaas-context=jdbcRealm:datasource-jndi=jdbc/rssreader:user-table=USERTBL:user-name-column=USERID:password-column=PW:group-table=GROUPTBL:group-table-user-name-column=USERID:group-name-column=GROUPID:digestrealm-password-enc-algorithm=AES:digest-algorithm=SHA-256:encoding=Hex:charset=UTF-8 jdbc_realm_rssreader
+    * デフォルトのロール・マッピングのプリンシパル設定の変更
+	  set server-config.security-service.activate-default-principal-to-role-mapping=true
+    * 【必要ならば】Proxyの設定
+	  create-jvm-options -Dhttps.proxyHost=your_proxy_host
+	  create-jvm-options -Dhttps.proxyPort=your_proxy_port
+	  create-jvm-options -Dhttp.proxyPort=your_proxy_port
+	  create-jvm-options -Dhttp.proxyHost=your_proxy_host
 1. ビルド環境の準備とbuild
 	* git clone https://github.com/amanobu/RssReader.git
 	* cd RssReader

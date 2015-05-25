@@ -31,11 +31,12 @@ import org.primefaces.model.menu.MenuModel;
  * @author amanobu
  */
 @Named(value = "mainPage")
-@ViewScoped
+@RequestScoped
 @Data
 public class MainPage {
 
     public MainPage() {
+        this.selectedAllView = false;
     }
 
     @EJB
@@ -44,14 +45,15 @@ public class MainPage {
     @Inject
     RssReaderLogicCDI rsslogiccdi;
 
-    @Inject
-    ConvsastionBean bean;
-
+    //表示中のrssidの格納
     private int rssid;
 
     private List<Feedtbl> feeds;
 
     private List<Contentstbl> list;
+
+    //true:全件表示 false:未読表示
+    boolean selectedAllView;
 
     @PostConstruct
     public void getFeedList() {
@@ -134,8 +136,13 @@ public class MainPage {
             DefaultMenuItem item = new DefaultMenuItem(feedtbl.getTitle());
             item.setValue(feedtbl.getTitle());
             //item.setCommand("#{mainPage.setRssid(" + feedtbl.getRssid().toString() + ")}");
+
             item.setCommand("#{mainPage.getContentsList(" + feedtbl.getRssid().toString() + ")}");
+            item.setOnsuccess("test()");
+            
             item.setUpdate("contentslist");
+
+//            item.setOnsuccess(";console.log(\'aaa\')");
             if (getUnreadCount(feedtbl.getRssid().intValue()) > 0) {
                 item.setStyle("myclass_unread");
             }
@@ -149,14 +156,12 @@ public class MainPage {
     }
 
     public void getContentsList(Integer rssid) {
+        this.setRssid(rssid);
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext econtext = context.getExternalContext();
         //setRssid((Integer) econtext.getFlash().get("rssid"));
-        setRssid(bean.getSelectedRssid());
         HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
-        LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "getContentsList called:", request.getRemoteUser(), "ConvsastionBean->", bean.toString());
         String user = request.getRemoteUser();
-        bean.setSelectedRssid(getRssid());
         List<Contentstbl> list = rsslogic.getContentsList(rssid, user);
         //LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "getContentsList called:", request.getRemoteUser(), "ConvsastionBean->", bean.toString(), "list", list.toString());
         setList(list);
@@ -174,37 +179,18 @@ public class MainPage {
     }
 
     public void updateView() {
-        LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "updateView called:", bean.isSelectedAllView(), "ConvsastionBean->", bean.toString());
-        if (bean.isSelectedAllView()) {
-            getContentsList();
+        if (selectedAllView) {
+            getContentsList(rssid);
         } else {
             getUnreadContentsList();
         }
     }
 
-    public void getContentsList() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext econtext = context.getExternalContext();
-        //setRssid((Integer) econtext.getFlash().get("rssid"));
-        setRssid(bean.getSelectedRssid());
-        HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
-        LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "getContentsList called:", request.getRemoteUser(), "ConvsastionBean->", bean.toString());
-        String user = request.getRemoteUser();
-        bean.setSelectedRssid(getRssid());
-        List<Contentstbl> list = rsslogic.getContentsList(rssid, user);
-        //LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "getContentsList called:", request.getRemoteUser(), "ConvsastionBean->", bean.toString(),"list",list.toString());
-        setList(list);
-    }
-
     public void getUnreadContentsList() {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext econtext = context.getExternalContext();
-        //setRssid((Integer) econtext.getFlash().get("rssid"));
-        setRssid(bean.getSelectedRssid());
         HttpServletRequest request = (HttpServletRequest) econtext.getRequest();
-        LogUtil.log(ContentsListPage.class.getName(), Level.INFO, "getUnreadContentsList called:", request.getRemoteUser(), "ConvsastionBean->", bean.toString());
         String user = request.getRemoteUser();
-        bean.setSelectedRssid(getRssid());
         setList(rsslogic.getUnreadContentsList(rssid, user));
     }
 }
