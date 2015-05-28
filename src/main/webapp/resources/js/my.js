@@ -18,13 +18,13 @@
  
  });
  */
-
-function init() {
-    $('.ui-panel-title').one("inview", function () {
-        //div:sampleの直前要素のtextを取得
-        console.log($(this).prev().text());
+//コンテンツが追加されたことを検出し、イベントを追加していく
+$(document).ready(function() {
+    $('#main').on('DOMSubtreeModified propertychange', function() {
+        test()
     });
-}
+});
+
 function ajaxStatusHandler(xhr, status, args) {
     console.log('ajaxStatusHandler');
 }

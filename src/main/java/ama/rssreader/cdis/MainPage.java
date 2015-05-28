@@ -138,9 +138,9 @@ public class MainPage {
             //item.setCommand("#{mainPage.setRssid(" + feedtbl.getRssid().toString() + ")}");
 
             item.setCommand("#{mainPage.getContentsList(" + feedtbl.getRssid().toString() + ")}");
-            item.setOnsuccess("test()");
-            
             item.setUpdate("contentslist");
+            //ここでjsを呼び出しても、上のcontentslistがアップデートされないうちに実行されるのでjsがわで変更を検知(DOMSubtreeModified)するようにした
+            //item.setOnsuccess("test()");
 
 //            item.setOnsuccess(";console.log(\'aaa\')");
             if (getUnreadCount(feedtbl.getRssid().intValue()) > 0) {
